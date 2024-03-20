@@ -2,37 +2,24 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const createExperience = async (req, res) => {
-  const userId = req.userId;
+  const userId = req.userId; 
   try {
-    const { title, company, location, startDate, endDate, description } =
-      req.body;
+    const { title, company, location, startDate, endDate, description } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
+    if (!title || !company || !location || !startDate || !description) {
+      return res.status(400).json({ error: "Please provide all required fields" });
+    }
+
+   
+    const profile = await prisma.profile.findFirst({
+      where: { userId },
     });
 
-    if (!user) {
-      res.status(400).json({ error: "User not found" });
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found for this user" });
     }
 
-    if (
-      !title ||
-      !company ||
-      !location ||
-      !startDate ||
-      !description ||
-      user.role !== "admin"
-    ) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Please provide all required fields && u dont have authoristaton",
-        });
-    }
-
+ 
     const newExperience = await prisma.experience.create({
       data: {
         title,
@@ -41,28 +28,32 @@ const createExperience = async (req, res) => {
         startDate,
         endDate,
         description,
+        profileId: profile.id,
       },
     });
 
     res.status(201).json(newExperience);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", error: error.message });
+    res.status(500).json({ error: "Internal Server Error", error: error.message });
   }
 };
-const getAllExperience = async (req, res) => {
+
+const getExperiencebyuser = async (req, res) => {
+  const userId = parseInt(req.params.userId); 
+ 
   try {
-    const experiences = await prisma.experience.findMany();
-    res.json(experiences);
+    const userExperiences = await prisma.experience.findMany({
+      where: { profile: { userId } },
+    });
+
+    res.status(200).json(userExperiences);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", error: error.message });
+    res.status(500).json({ error: "Internal Server Error", error: error.message });
   }
 };
+
 
 const deleteExperiences = async (req, res) => {
     const userId = req.userId;
@@ -70,7 +61,7 @@ const deleteExperiences = async (req, res) => {
       const experienceId = parseInt(req.params.id, 10);
     
   
-      // Rename the variable to avoid conflict with Prisma's 'user' model
+      
       const currentUser = await prisma.user.findUnique({
         where: {
           id: userId,
@@ -98,4 +89,4 @@ const deleteExperiences = async (req, res) => {
     }
   };
   
-export { createExperience, getAllExperience, deleteExperiences };
+export { createExperience, getExperiencebyuser, deleteExperiences };

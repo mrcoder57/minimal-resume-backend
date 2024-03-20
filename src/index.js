@@ -5,6 +5,8 @@ import { config } from "dotenv";
 import userRoutes from "./routes/user.routes.js"
 import experienceRoutes from "./routes/experience.routes.js"
 import projectRoutes from "./routes/project.route.js"
+import testimonialRoutes from "./routes/testimonials.route.js"
+import profileRoutes from "./routes/profile.route.js"
 config();
 
 const app = express();
@@ -21,4 +23,6 @@ server.listen(port, () => {
     app.use('/users',userRoutes)
     app.use('/experience',experienceRoutes)
     app.use('/project',projectRoutes)
+    app.use('/testimonials',testimonialRoutes)
+    app.use('/profile',profileRoutes)
 });

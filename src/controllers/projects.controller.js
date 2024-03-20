@@ -9,7 +9,7 @@ const createProject = async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
-    console.log(user.role);
+    
     if (!title || !description || !startDate || !skills || !image) {
       return res
         .status(400)
@@ -55,7 +55,7 @@ const deleteProjects = async (req, res) => {
         },
       });
   
-      console.log(currentUser);
+      // console.log(currentUser);
   
       if (currentUser.role !== "admin") {
         return res.status(400).json({ message: "You are not authorized" });

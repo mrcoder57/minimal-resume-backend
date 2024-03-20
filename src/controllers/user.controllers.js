@@ -8,17 +8,17 @@ const JWT_SECRET=process.env.secret_key
 
 const registerUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password,name } = req.body;
     const role = Userrole;
     const hashedPassword = await bcrypt.hash(password, 10);
-    if (!email || !password || !role) {
+    if (!email || !password || !role || !name) {
       return res
         .status(400)
         .json({ error: "Please provide all required fields" });
     }
 
     const newUser = await prisma.user.create({
-      data: { email, password:hashedPassword, role },
+      data: { email, password:hashedPassword, role, name },
     });
 
     const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
