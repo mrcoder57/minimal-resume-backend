@@ -45,11 +45,16 @@ const createProject = async (req, res) => {
   }
 };
 const getprojectbyUserId = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
   try {
     const projects = await prisma.project.findMany({
       where: {
         userId: userId,
+      },
+      include: { 
+        User: true,
+        Profile: true,
+        
       },
     });
 
@@ -58,6 +63,7 @@ const getprojectbyUserId = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 const deleteProjects = async (req, res) => {
   const userId = req.userId;
