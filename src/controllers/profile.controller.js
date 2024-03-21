@@ -43,22 +43,21 @@ const createUserProfile = async (req, res) => {
 
 
 
-  const getProfileByUserId = async (req, res) => {
-    const userId = parseInt(req.params.userId, 10); 
-    try {
-        const profile = await prisma.profile.findFirst({
-            where: { userId },
-        });
+const getProfileByUserId = async (req, res) => {
+  const userId = parseInt(req.params.userId, 10); 
+  try {
+      const profiles = await prisma.profile.findMany({
+          where: { userId },
+      });
 
-        if (!profile) {
-            return res.status(404).json({ error: "Profile not found for this user" });
-        }
+      if (!profiles || profiles.length === 0) {
+          return res.status(404).json({ error: "Profiles not found for this user" });
+      }
 
-        return res.status(200).json({ profileId: profile.id,profile });
-    } catch (error) {
-        
-        return res.status(500).json({ error: "An error occurred while fetching the profile",error });
-    }
+      return res.status(200).json({ profiles });
+  } catch (error) {
+      return res.status(500).json({ error: "An error occurred while fetching the profiles", error });
+  }
 };
 
   
