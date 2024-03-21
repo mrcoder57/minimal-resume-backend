@@ -20,18 +20,24 @@ model User {
 }
 
 model Profile {
-  id          Int         @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   bio         String?
   linkedin    String?
-  twitter      String
-  profilePic   String
-  userId      Int         @unique
-  user        User        @relation(fields: [userId], references: [id])
+  twitter     String
+  profilePic  String
+  userId      Int          @unique
+  user        User         @relation(fields: [userId], references: [id])
+  
+  skills      String[]
+  education   String?
+  name        String?
+  overview    String?
   
   experiences Experience[]
   projects    Project[]
   testimonial Testimonial[]
 }
+
 
 model Experience {
   id          Int         @id @default(autoincrement())
