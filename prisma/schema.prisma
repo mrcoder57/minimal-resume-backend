@@ -29,9 +29,9 @@ model Profile {
   user        User         @relation(fields: [userId], references: [id])
   
   skills      String[]
-  education   String?
-  name        String?
-  overview    String?
+  education   String
+  name        String
+  overview    String
   
   experiences Experience[]
   projects    Project[]

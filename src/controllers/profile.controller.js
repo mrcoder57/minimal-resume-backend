@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const createUserProfile = async (req, res) => {
-  const userId = req.userId; 
+  const userId = req.userId;
   try {
     const { bio, linkedin, twitter, profilePic, skills, education, name, overview } = req.body;
 
@@ -11,7 +11,9 @@ const createUserProfile = async (req, res) => {
     }
 
     const existingProfile = await prisma.profile.findUnique({
-      where: { userId },
+      where: {
+        userId: userId 
+      }
     });
 
     if (existingProfile) {
@@ -38,6 +40,8 @@ const createUserProfile = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error", message: error.message });
   }
 };
+
+
 
   const getProfileByUserId = async (req, res) => {
     const userId = parseInt(req.params.userId, 10); 
