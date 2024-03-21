@@ -48,6 +48,8 @@ const getProfileByUserId = async (req, res) => {
   try {
       const profiles = await prisma.profile.findMany({
           where: { userId },
+
+          
       });
 
       if (!profiles || profiles.length === 0) {
@@ -58,8 +60,6 @@ const getProfileByUserId = async (req, res) => {
   } catch (error) {
       return res.status(500).json({ error: "An error occurred while fetching the profiles", error });
   }
-
-  
 };
 
   
