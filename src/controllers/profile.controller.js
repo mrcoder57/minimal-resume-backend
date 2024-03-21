@@ -16,31 +16,27 @@ const createUserProfile = async (req, res) => {
       overview,
     } = req.body;
 
+    // Check if bio or linkedin or both are provided
     if (!bio && !linkedin) {
-      return res
-        .status(400)
-        .json({ error: "Please provide bio or linkedin or both" });
+      return res.status(400).json({ error: "Please provide bio or linkedin or both" });
     }
 
+    // Check if profile already exists for this user
     const existingProfile = await prisma.profile.findUnique({
-      where: {
-        userId: userId,
-      },
+      where: { userId: userId },
     });
-
     if (existingProfile) {
-      return res
-        .status(400)
-        .json({ error: "Profile already exists for this user" });
+      return res.status(400).json({ error: "Profile already exists for this user" });
     }
 
+    // Create new profile
     const newProfile = await prisma.profile.create({
       data: {
         bio,
         linkedin,
         twitter,
         profilePic,
-        skills,
+        skills: skills || ["react","node"], // Ensure skills is an array, if not provided
         education,
         name,
         overview,
@@ -50,12 +46,11 @@ const createUserProfile = async (req, res) => {
 
     return res.status(201).json(newProfile);
   } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error", message: error.message });
+    console.error("Error creating profile:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const getProfileByUserId = async (req, res) => {
   const userId = parseInt(req.params.userId, 10);
