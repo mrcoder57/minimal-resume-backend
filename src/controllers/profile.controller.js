@@ -58,6 +58,8 @@ const getProfileByUserId = async (req, res) => {
   } catch (error) {
       return res.status(500).json({ error: "An error occurred while fetching the profiles", error });
   }
+
+  
 };
 
   
