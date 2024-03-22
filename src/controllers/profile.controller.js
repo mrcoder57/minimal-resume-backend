@@ -16,12 +16,10 @@ const createUserProfile = async (req, res) => {
       overview,
     } = req.body;
 
-    // Check if bio or linkedin or both are provided
     if (!bio && !linkedin) {
       return res.status(400).json({ error: "Please provide bio or linkedin or both" });
     }
 
-    // Check if profile already exists for this user
     const existingProfile = await prisma.profile.findUnique({
       where: { userId: userId },
     });
@@ -29,7 +27,6 @@ const createUserProfile = async (req, res) => {
       return res.status(400).json({ error: "Profile already exists for this user" });
     }
 
-    // Create new profile
     const newProfile = await prisma.profile.create({
       data: {
         bio,
